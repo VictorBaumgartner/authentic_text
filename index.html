@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuthentiText - AI Analysis & Humanizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>AuthentiText</h1>
+            <p>From Robotic to Realistic. Analyze and Humanize Your Content.</p>
+        </header>
+
+        <main>
+            <div class="input-area">
+                <textarea id="main-text" placeholder="Paste your text here to begin..."></textarea>
+                <button id="analyze-btn" class="cta-button">Analyze Text</button>
+            </div>
+
+            <!-- This section is hidden by default -->
+            <div id="results-panel" class="results-panel hidden">
+                <div class="analysis-section">
+                    <div class="chart-container">
+                        <div class="score-chart" role="progressbar" aria-valuenow="85" style="--value: 85;"></div>
+                        <div class="chart-label">AI Score</div>
+                    </div>
+                    <div class="improvements-list">
+                        <h2>Points for Improvement</h2>
+                        <ul>
+                            <li><span class="icon">🤖</span><strong>Lacks Personal Voice:</strong> The tone is overly neutral and lacks unique personality.</li>
+                            <li><span class="icon">🌊</span><strong>Uniform Sentence Structure:</strong> Sentences have similar length and complexity, creating a monotonous rhythm.</li>
+                            <li><span class="icon">📚</span><strong>Overly Formal Vocabulary:</strong> Uses complex words where simpler ones would be more natural.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="humanizer-section">
+                    <h2>Make it Human</h2>
+                    <div class="style-selector">
+                        <select id="style-dropdown">
+                            <option value="Conversational & Casual">Conversational & Casual</option>
+                            <option value="Respectful & Formal">Respectful & Formal</option>
+                            <option value="Persuasive & Confident">Persuasive & Confident</option>
+                            <option value="Storytelling & Engaging">Storytelling & Engaging</option>
+                            <option value="Academic & Scholarly">Academic & Scholarly</option>
+                        </select>
+                        <button id="add-style-btn" class="secondary-button">Define Custom Style</button>
+                    </div>
+                    
+                    <!-- Hidden custom style creator -->
+                    <div id="custom-style-creator" class="custom-style-creator hidden">
+                        <input type="text" placeholder="Give your style a name (e.g., 'My Blog Voice')">
+                        <textarea placeholder="Paste an example of the writing style you want..."></textarea>
+                    </div>
+                    
+                    <button id="humanize-btn" class="cta-button">✨ Humanize</button>
+                </div>
+
+                <div id="output-area" class="output-area hidden">
+                    <textarea id="humanized-text" readonly>Your humanized text will appear here...</textarea>
+                    <button id="copy-btn" class="secondary-button">Copy Text</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Simple JavaScript to toggle visibility for demo -->
+    <script>
+        // This is just for demonstration purposes. A real app would use a framework.
+        document.getElementById('analyze-btn').addEventListener('click', () => {
+            document.getElementById('results-panel').classList.remove('hidden');
+        });
+        document.getElementById('add-style-btn').addEventListener('click', () => {
+            document.getElementById('custom-style-creator').classList.toggle('hidden');
+        });
+        document.getElementById('humanize-btn').addEventListener('click', () => {
+            document.getElementById('output-area').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
