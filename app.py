@@ -65,32 +65,37 @@ def load_css(theme_css):
 
 @st.cache_data(show_spinner=False)
 def get_human_score_and_analysis(text_to_analyze: str) -> dict:
-    # --- ENHANCED, GENERALIZED, AND RUTHLESS PROMPT ---
+    """
+    Analyzes text with a ruthless, generalized prompt that caps the score at 50
+    if any AI hallmarks are detected.
+    """
+    # --- MODIFIED PROMPT WITH A STRICT SCORING MANDATE ---
     prompt = f"""
-    You are a world-class linguistic forensic analyst with an unmatched ability to detect AI-generated text, even when it’s highly polished and deceptively human-like. Your task is to scrutinize the provided text with extreme skepticism, identifying subtle cues that distinguish authentic human writing from AI output. Be ruthless in your judgment, assigning a conservative human-likeness score and leaning toward lower scores if any doubt exists.
+    You are a world-class linguistic forensic analyst. Your job is to unmask AI-generated text with extreme skepticism. Be ruthless in your judgment.
 
-    To guide your analysis, consider these generalized, topic-agnostic examples:
+    To guide you, consider these generalized, topic-agnostic examples:
 
     --- AI-Generated Example (Hallmarks of AI) ---
     "The implementation of synergistic paradigms is a crucial component for leveraging core competencies. By strategically facilitating cross-platform integrations, organizations can unlock robust productivity gains and enhance stakeholder value. This data-driven approach ensures optimal outcomes across all operational verticals."
-    *Analysis of AI example: This text relies on predictable corporate jargon ('synergistic paradigms', 'leveraging'), with uniform sentence structures and a neutral, impersonal tone lacking unique voice or emotional depth. It feels formulaic and robotic.*
+    *Analysis: Predictable corporate jargon, uniform sentence structure, and a completely impersonal tone. It is formulaic and robotic.*
 
     --- Human-Written Example (Hallmarks of Human) ---
-    "Look, let's be honest—most of the 'productivity hacks' out there are just clever ways to procrastinate. I once spent a whole day color-coding my tasks instead of, you know, actually doing them. The real breakthrough for me wasn't some fancy system; it was just admitting that I needed to focus on one thing at a time. It’s not revolutionary, but it works."
-    *Analysis of human example: This text has a distinct, conversational voice with varied sentence structures, a personal anecdote, and an opinionated tone. It feels authentic, relatable, and emotionally grounded.*
+    "Look, let's be honest—most 'productivity hacks' are just clever ways to procrastinate. I once spent a whole day color-coding my tasks instead of, you know, actually doing them. The real breakthrough wasn't some fancy system; it was just admitting I needed to focus on one thing at a time. It’s not revolutionary, but it works."
+    *Analysis: Distinct conversational voice, varied sentence rhythm, a personal anecdote, and an opinionated tone. It feels authentic.*
 
-    Analyze the following text with a forensic lens, focusing on these critical dimensions:
-    1. **Voice & Idiosyncrasy**: Does the text exhibit a unique personality, memorable phrasing, or context-specific tone, or does it rely on generic, high-probability word choices typical of AI?
-    2. **Rhythm & Flow**: Are sentence structures varied and natural (burstiness), or are they uniform, monotonous, or overly polished?
-    3. **Emotional Depth & Authenticity**: Does the text convey genuine emotion, opinion, or context-specific nuance, or is it overly neutral, superficial, or detached?
-    4. **Word Choice & Predictability**: Does the text use creative, unexpected, or contextually appropriate words, or does it lean on clichéd, formulaic, or overly formal phrases?
+    --- SCORING MANDATE & CRITICAL RULE ---
+    You must adhere to a strict scoring ceiling. If the text exhibits **ANY** of the classic hallmarks of AI (uniformity, predictable vocabulary, flawless polish, lack of distinct voice), the human_score **MUST NOT EXCEED 50**. This is a non-negotiable ceiling. Scores above 50 are reserved *exclusively* for texts where you are highly confident they are human-written, exhibiting clear signs of personality and authenticity.
 
-    Handle ambiguous cases (e.g., human-edited AI text) by erring on the side of caution and assigning a lower score unless clear human hallmarks are present. Provide actionable suggestions to make the text more human-like.
+    Analyze the following text with a forensic lens, focusing on:
+    1.  **Voice & Idiosyncrasy**: Unique personality vs. generic phrasing.
+    2.  **Rhythm & Flow**: Varied and natural vs. uniform and monotonous.
+    3.  **Authenticity**: Genuine emotion and opinion vs. neutral and detached.
+    4.  **Word Choice**: Creative and unexpected vs. clichéd and predictable.
 
-    Return your analysis in strict JSON format with the following keys:
-    - "human_score": A number between 0 and 100 (100 = unmistakably human, 0 = unmistakably AI). Be conservative.
+    Return your analysis in a strict JSON format with the following keys:
+    - "human_score": A number from 0-100, strictly following the Scoring Mandate above.
     - "reason": A one-sentence summary of your expert judgment.
-    - "improvements": A list of JSON objects, each with "point" (a specific issue) and "explanation" (how to address it).
+    - "improvements": A list of JSON objects, each with "point" and "explanation".
 
     Text to analyze:
     \"\"\"
@@ -100,7 +105,7 @@ def get_human_score_and_analysis(text_to_analyze: str) -> dict:
     try:
         response = client.chat.completions.create(
             model=MODEL, messages=[{"role": "user", "content": prompt}],
-            temperature=0.1, # Low temperature for more deterministic analysis
+            temperature=0.1, # Keep temperature low for consistent, rule-based analysis
             response_format={"type": "json_object"}
         )
         return json.loads(response.choices[0].message.content)
